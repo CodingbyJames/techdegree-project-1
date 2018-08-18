@@ -43,35 +43,75 @@ for player in players {
     }
 }
 //in order to stay balanced, total experienced players on each team is number of experienced players divided by number of teams
-let experiencedPerTeam = experiencedGroup.count/teams.count
+// added logic for if there aren't a perfect number of experienced per team how to deal with the extras
+var experiencedPerTeam = 0
+var extraExperiencedPlayers = 0
+if (experiencedGroup.count%teams.count == 0){
+    experiencedPerTeam = experiencedGroup.count/teams.count
+} else {
+    experiencedPerTeam = experiencedGroup.count/teams.count
+    extraExperiencedPlayers = experiencedGroup.count%teams.count
+}
 
 
-//for loop going through all players and setting them into teams based on the number of experienced players necessary for balance (if logic evaluates to (0 < 3), (1 < 3)... and will put 3 players in each team
+//for loop going through all players and setting them into teams based on the number of experienced players necessary for balance (if logic evaluates to (0 < 3), (1 < 3)... and will put 3 players in each team.
+//cast the PerTeam as int so that if it wasnt an even number it will round down to fix any errors
 for player in experiencedGroup {
-    if (teamRaptors.count < experiencedPerTeam) {
+    if (teamRaptors.count < Int(experiencedPerTeam)) {
         teamRaptors.append(player)
     }
-    else if (teamDragons.count < experiencedPerTeam) {
+    else if (teamDragons.count < Int(experiencedPerTeam)) {
         teamDragons.append(player)
     }
-    else if teamSharks.count < experiencedPerTeam {
+    else if (teamSharks.count < Int(experiencedPerTeam)){
         teamSharks.append(player)
+    }
+    else {
+        //now we deal with extra players if we have any
+        if (extraExperiencedPlayers != 0) {
+            if ((teamRaptors.count <= teamDragons.count) && (teamRaptors.count <= teamSharks.count)) {
+                teamRaptors.append(player)
+            }
+            else if (teamDragons.count <= teamSharks.count) {
+                teamDragons.append(player)
+            }
+            else {
+                print("all players have been added to teams")
+            }
+        }
+        else {
+            print("all players have been added to teams")
+        }
     }
     
 }
 //Finding out how many players should be on each team (to avoid using magic numbers)
+//this number may end up being a double if there aren't a perfectly divisible number of players but the logic checks out just fine
 var totalPlayersOnTeam = players.count/teams.count
 
-//Final logic adding rest of players (inexperienced) to teams until team is full (number of players/number of teams) again to avoid magic numbers
+//Final logic adding rest of players (inexperienced) to teams until team is full (number of players/number of teams) again to avoid magic numbers.
+//had to add logic here at the end as well to avoid weird interactions if players weren't perfectly divisible by the number of teams
 for player in notExperiencedGroup {
-    if (teamRaptors.count < totalPlayersOnTeam) {
+    if (teamRaptors.count < Int(totalPlayersOnTeam)) {
         teamRaptors.append(player)
     }
-    else if (teamDragons.count < totalPlayersOnTeam) {
+    else if (teamDragons.count < Int(totalPlayersOnTeam)) {
         teamDragons.append(player)
     }
-    else if teamSharks.count < totalPlayersOnTeam {
+    else if teamSharks.count < Int(totalPlayersOnTeam) {
         teamSharks.append(player)
+    }
+        //here is the logic to deal with extra inexperienced players
+    else {
+        if ((teamRaptors.count <= teamDragons.count) && (teamRaptors.count <= teamSharks.count)) {
+            teamRaptors.append(player)
+        }
+        else if (teamDragons.count <= teamSharks.count) {
+            teamDragons.append(player)
+        }
+        else {
+            print("all players have been added")
+        }
     }
     
 }
